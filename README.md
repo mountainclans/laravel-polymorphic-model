@@ -95,7 +95,7 @@ class YourModel extends Model {
 }
 ```
 
-Если переопределение не сделано, в момент выполнения метода boot модели-наследника будет выброшено исключение `RequiredOverrideNotExistsException`.
+Если переопределение не сделано, в момент выполнения метода `boot` модели-наследника будет выброшено исключение `RequiredOverrideNotExistsException`.
 
 ## Авторы
 
