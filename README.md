@@ -12,9 +12,11 @@ composer require mountainclans/laravel-polymorphic-model
 
 ## Использование
 
-Добавьте в родительский класс использование трейта PolymorphicModel и переменную $allowedTypes, содержащую в себе допустимые типы классов-наследников.
+Добавьте в родительский класс использование трейта `PolymorphicModel` и константу `ALLOWED_TYPES`, содержащую в себе допустимые типы классов-наследников.
 
 Также для корректного сохранения модели в той же таблице явно укажите в родителе, какую таблицу он использует.
+
+Убедитесь, что в таблице присутствует поле `type`.
 
 ```php
 use MountainClans\LaravelPolymorphicModel\Traits\PolymorphicModel;
