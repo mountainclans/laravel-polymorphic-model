@@ -99,6 +99,12 @@ class YourModel extends Model {
 
 Если переопределение не сделано, в момент выполнения метода `boot` модели-наследника будет выброшено исключение `RequiredOverrideNotExistsException`.
 
+## Тестирование
+
+```bash
+./vendor/bin/pest --stop-on-error
+```
+
 ## Авторы
 
 - [Vladimir Bajenov](https://github.com/mountainclans)
