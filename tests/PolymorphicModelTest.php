@@ -3,10 +3,10 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 use MountainClans\LaravelPolymorphicModel\Exceptions\PolymorphicModelPropertyIsNotExistsException;
-use Tests\Models\BaseTestModel;
-use Tests\Models\ChildTestModel;
-use Tests\Models\AnotherChildTestModel;
-use Tests\Models\WrongTypedChildTestModel;
+use MountainClans\LaravelPolymorphicModel\Tests\Models\AnotherChildTestModel;
+use MountainClans\LaravelPolymorphicModel\Tests\Models\BaseTestModel;
+use MountainClans\LaravelPolymorphicModel\Tests\Models\ChildTestModel;
+use MountainClans\LaravelPolymorphicModel\Tests\Models\WrongTypedBaseTestModel;
 
 beforeEach(function () {
     Schema::create('test_models', function (Blueprint $table) {
@@ -21,27 +21,42 @@ afterEach(function () {
 });
 
 it('throws if ALLOWED_TYPES is not defined', function () {
-    expect(fn() => new WrongTypedChildTestModel())->toThrow(PolymorphicModelPropertyIsNotExistsException::class);
+    expect(function() {
+        $model = new WrongTypedBaseTestModel();
+        $model->name = 'wrong typed model';
+        $model->save();
+
+        // todo проверить, выброс ошибок действительно должен проявляться впервые при refresh?
+        $model = $model->refresh();
+    })
+        ->toThrow(PolymorphicModelPropertyIsNotExistsException::class);
 });
 
 it('creates correct instance from builder for child', function () {
-    $child = new BaseTestModel([
+    $model = BaseTestModel::create([
         'type' => BaseTestModel::TYPE_CHILD,
-        'id' => 1,
         'name' => 'test'
     ]);
+    $modelId = $model->id;
+    $child = $model->refresh();
+
     expect($child)->toBeInstanceOf(ChildTestModel::class);
     expect($child->type)->toBe(BaseTestModel::TYPE_CHILD);
-    expect($child->id)->toBe(1);
+    expect($child->id)->toBe($modelId);
     expect($child->name)->toBe('test');
 });
 
 it('creates correct instance from builder for another child', function () {
-    $model = new BaseTestModel();
-    $another = $model->newFromBuilder(['type' => BaseTestModel::TYPE_ANOTHER_CHILD, 'id' => 2, 'name' => 'another']);
+    $model = BaseTestModel::create([
+        'type' => BaseTestModel::TYPE_ANOTHER_CHILD,
+        'name' => 'another'
+    ]);
+    $modelId = $model->id;
+    $another = $model->refresh();
+
     expect($another)->toBeInstanceOf(AnotherChildTestModel::class);
     expect($another->type)->toBe(BaseTestModel::TYPE_ANOTHER_CHILD);
-    expect($another->id)->toBe(2);
+    expect($another->id)->toBe($modelId);
     expect($another->name)->toBe('another');
 });
 

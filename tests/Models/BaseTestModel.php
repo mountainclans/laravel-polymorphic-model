@@ -12,6 +12,11 @@ class BaseTestModel extends Model
     protected $table = 'test_models';
     public $timestamps = false;
 
+    protected $fillable = [
+        'name',
+        'type',
+    ];
+
     public const TYPE_CHILD = 'child';
     public const TYPE_ANOTHER_CHILD = 'another_child';
 
