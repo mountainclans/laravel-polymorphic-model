@@ -40,10 +40,10 @@ it('creates correct instance from builder for child', function () {
     $modelId = $model->id;
     $child = $model->refresh();
 
-    expect($child)->toBeInstanceOf(ChildTestModel::class);
-    expect($child->type)->toBe(BaseTestModel::TYPE_CHILD);
-    expect($child->id)->toBe($modelId);
-    expect($child->name)->toBe('test');
+    expect($child)->toBeInstanceOf(ChildTestModel::class)
+        ->and($child->type)->toBe(BaseTestModel::TYPE_CHILD)
+        ->and($child->id)->toBe($modelId)
+        ->and($child->name)->toBe('test');
 });
 
 it('creates correct instance from builder for another child', function () {
@@ -54,10 +54,10 @@ it('creates correct instance from builder for another child', function () {
     $modelId = $model->id;
     $another = $model->refresh();
 
-    expect($another)->toBeInstanceOf(AnotherChildTestModel::class);
-    expect($another->type)->toBe(BaseTestModel::TYPE_ANOTHER_CHILD);
-    expect($another->id)->toBe($modelId);
-    expect($another->name)->toBe('another');
+    expect($another)->toBeInstanceOf(AnotherChildTestModel::class)
+        ->and($another->type)->toBe(BaseTestModel::TYPE_ANOTHER_CHILD)
+        ->and($another->id)->toBe($modelId)
+        ->and($another->name)->toBe('another');
 });
 
 it('scopeWithSubclasses returns all allowed types', function () {
@@ -75,8 +75,9 @@ it('scopeWithoutSubclasses returns only base', function () {
     BaseTestModel::query()->create(['type' => BaseTestModel::TYPE_ANOTHER_CHILD, 'name' => 'another']);
 
     $models = BaseTestModel::query()->withoutSubclasses()->get();
-    expect($models)->toHaveCount(1);
-    expect($models->first()->type)->toBe(BaseTestModel::TYPE_DEFAULT);
+    expect($models)
+        ->toHaveCount(1)
+        ->and($models->first()->type)->toBe(BaseTestModel::TYPE_DEFAULT);
 });
 
 it('refresh returns correct instance for child', function () {
@@ -84,16 +85,19 @@ it('refresh returns correct instance for child', function () {
     $another = BaseTestModel::query()->create(['type' => BaseTestModel::TYPE_ANOTHER_CHILD, 'name' => 'another']);
 
     $childModel = BaseTestModel::find($child->id);
-    expect($childModel)->toBeInstanceOf(ChildTestModel::class);
-    expect($childModel->id)->toBe($child->id);
+    expect($childModel)
+        ->toBeInstanceOf(ChildTestModel::class)
+        ->and($childModel->id)->toBe($child->id);
 
     $anotherModel = BaseTestModel::find($another->id);
-    expect($anotherModel)->toBeInstanceOf(AnotherChildTestModel::class);
-    expect($anotherModel->id)->toBe($another->id);
+    expect($anotherModel)
+        ->toBeInstanceOf(AnotherChildTestModel::class)
+        ->and($anotherModel->id)->toBe($another->id);
 });
 
 it('bootPolymorphicModel sets type on saving', function () {
     $model = new BaseTestModel(['name' => 'test']);
     $model->save();
+
     expect($model->type)->toBe(BaseTestModel::TYPE_DEFAULT);
 });
