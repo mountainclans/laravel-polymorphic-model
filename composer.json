@@ -31,13 +31,11 @@
     "autoload": {
         "psr-4": {
             "MountainClans\\LaravelPolymorphicModel\\": "src/",
-            "MountainClans\\LaravelPolymorphicModel\\Database\\Factories\\": "database/factories/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "MountainClans\\LaravelPolymorphicModel\\Tests\\": "tests/",
-            "Workbench\\App\\": "workbench/app/"
+            "MountainClans\\LaravelPolymorphicModel\\Tests\\": "tests/"
         }
     },
     "scripts": {
