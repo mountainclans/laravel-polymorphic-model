@@ -30,7 +30,7 @@
     },
     "autoload": {
         "psr-4": {
-            "MountainClans\\LaravelPolymorphicModel\\": "src/",
+            "MountainClans\\LaravelPolymorphicModel\\": "src/"
         }
     },
     "autoload-dev": {
