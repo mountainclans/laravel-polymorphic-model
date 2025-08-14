@@ -20,7 +20,7 @@ afterEach(function () {
     Schema::dropIfExists('test_models');
 });
 
-it('throws if ALLOWED_TYPES is not defined', function () {
+it('throws if method allowedTypes() is not defined', function () {
     expect(function() {
         $model = new WrongTypedBaseTestModel();
         $model->name = 'wrong typed model';

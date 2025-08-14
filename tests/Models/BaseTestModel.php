@@ -20,11 +20,14 @@ class BaseTestModel extends Model
     public const TYPE_CHILD = 'child';
     public const TYPE_ANOTHER_CHILD = 'another_child';
 
-    public const ALLOWED_TYPES = [
-        self::TYPE_DEFAULT => self::class,
-        self::TYPE_CHILD => ChildTestModel::class,
-        self::TYPE_ANOTHER_CHILD => AnotherChildTestModel::class,
-    ];
+    public static function allowedTypes(): array
+    {
+        return [
+            self::TYPE_DEFAULT => self::class,
+            self::TYPE_CHILD => ChildTestModel::class,
+            self::TYPE_ANOTHER_CHILD => AnotherChildTestModel::class,
+        ];
+    }
 
     protected function getInstanceType(): string
     {

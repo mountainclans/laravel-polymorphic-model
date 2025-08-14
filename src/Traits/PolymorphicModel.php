@@ -7,11 +7,13 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use MountainClans\LaravelPolymorphicModel\Attributes\RequiresOverride;
 use MountainClans\LaravelPolymorphicModel\Exceptions\PolymorphicModelPropertyIsNotExistsException;
+use ReflectionMethod;
 
 trait PolymorphicModel
 {
     use CheckOverrides;
 
+    protected static array $allowedTypesCheckCache = [];
     public const TYPE_DEFAULT = 'default';
 
     #[RequiresOverride]
@@ -46,7 +48,7 @@ trait PolymorphicModel
     {
         $this->checkPolymorphicModelRequirements($attributes);
 
-        $allowedTypes = static::ALLOWED_TYPES;
+        $allowedTypes = static::allowedTypes();
 
         $instance = isset($allowedTypes[$attributes->type ?? null])
             ? new $allowedTypes[$attributes->type]
@@ -68,12 +70,36 @@ trait PolymorphicModel
      */
     protected function checkPolymorphicModelRequirements($attributes): void
     {
-        // Проверяем наличие массива ALLOWED_TYPES и поля type
-        if (!defined(static::class . '::ALLOWED_TYPES')) {
+        $class = static::class;
+
+        // Кешируем результат, чтобы не гонять рефлексию постоянно
+        if (isset(self::$allowedTypesCheckCache[$class])) {
+            return;
+        }
+
+        if (!method_exists($class, 'allowedTypes')) {
             throw new PolymorphicModelPropertyIsNotExistsException(
-                'Public const ALLOWED_TYPES must be defined in the model.'
+                'Public static method allowedTypes() must be defined in the model.'
             );
         }
+
+        $ref = new ReflectionMethod($class, 'allowedTypes');
+
+        if (!$ref->isPublic() || !$ref->isStatic()) {
+            throw new PolymorphicModelPropertyIsNotExistsException(
+                'Method allowedTypes() must be public and static in the model.'
+            );
+        }
+
+        $returnType = $ref->getReturnType();
+        if (!$returnType || $returnType->getName() !== 'array') {
+            throw new PolymorphicModelPropertyIsNotExistsException(
+                'Method allowedTypes() must have return type array in the model.'
+            );
+        }
+
+        // Проставляем в кеш
+        self::$allowedTypesCheckCache[$class] = true;
 
         $attributes = (array)$attributes;
 
@@ -88,7 +114,7 @@ trait PolymorphicModel
     {
         parent::refresh();
 
-        $allowedTypes = static::ALLOWED_TYPES;
+        $allowedTypes = static::allowedTypes();
 
         $targetClass = Arr::get($allowedTypes, $this->type, static::class);
 
@@ -111,7 +137,7 @@ trait PolymorphicModel
     {
         $types = [];
 
-        foreach (static::ALLOWED_TYPES as $allowedType => $allowedClass) {
+        foreach (static::allowedTypes() as $allowedType => $allowedClass) {
             if (is_subclass_of($allowedClass, $this::class)) {
                 $types[] = $allowedType;
             }

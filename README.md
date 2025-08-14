@@ -12,7 +12,7 @@ composer require mountainclans/laravel-polymorphic-model
 
 ## Использование
 
-Добавьте в родительский класс использование трейта `PolymorphicModel` и константу `ALLOWED_TYPES`, содержащую в себе допустимые типы классов-наследников.
+Добавьте в родительский класс использование трейта `PolymorphicModel` и  `public static function allowedTypes(): array`, возвращающий массив допустимых типов классов-наследников.
 
 Также для корректного сохранения модели в той же таблице явно укажите в родителе, какую таблицу он использует.
 
@@ -27,12 +27,15 @@ class YourParentModel {
     public const TYPE_TOP_BANNER = 'top_banner';
     public const TYPE_ADVANTAGES = 'advantages';
     
-    public const ALLOWED_TYPES = [
-        self::TYPE_TOP_BANNER => TopBannerSection::class,
-        self::TYPE_ADVANTAGES => AdvantagesSection::class,
-    ];
-    
     protected $table = 'your_parent_model';
+    
+    public static function allowedTypes(): array
+    {
+        return [
+            self::TYPE_TOP_BANNER => TopBannerSection::class,
+            self::TYPE_ADVANTAGES => AdvantagesSection::class,
+        ];
+    }
 }
 ```
 
