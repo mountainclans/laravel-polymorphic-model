@@ -1,0 +1,46 @@
+name: tests
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - laravel: 11
+            testbench: 9
+            php: 8.3
+          - laravel: 12
+            testbench: 10
+            php: 8.4
+          - laravel: 13
+            testbench: 11
+            php: 8.5
+
+    name: L${{ matrix.laravel }} · PHP ${{ matrix.php }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: dom, curl, libxml, mbstring, zip
+          coverage: none
+
+      - name: Install dependencies
+        run: |
+          composer require \
+            "laravel/framework:${{ matrix.laravel }}.*" \
+            "orchestra/testbench:${{ matrix.testbench }}.*" \
+            --no-interaction --no-update
+          composer update --prefer-dist --no-interaction
+
+      - name: Run tests
+        run: vendor/bin/pest
