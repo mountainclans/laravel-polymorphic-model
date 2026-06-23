@@ -21,8 +21,8 @@ afterEach(function () {
 });
 
 it('throws if method allowedTypes() is not defined', function () {
-    expect(function() {
-        $model = new WrongTypedBaseTestModel();
+    expect(function () {
+        $model = new WrongTypedBaseTestModel;
         $model->name = 'wrong typed model';
         $model->save();
 
@@ -35,7 +35,7 @@ it('throws if method allowedTypes() is not defined', function () {
 it('creates correct instance from builder for child', function () {
     $model = BaseTestModel::create([
         'type' => BaseTestModel::TYPE_CHILD,
-        'name' => 'test'
+        'name' => 'test',
     ]);
     $modelId = $model->id;
     $child = $model->refresh();
@@ -49,7 +49,7 @@ it('creates correct instance from builder for child', function () {
 it('creates correct instance from builder for another child', function () {
     $model = BaseTestModel::create([
         'type' => BaseTestModel::TYPE_ANOTHER_CHILD,
-        'name' => 'another'
+        'name' => 'another',
     ]);
     $modelId = $model->id;
     $another = $model->refresh();

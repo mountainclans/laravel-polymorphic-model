@@ -12,5 +12,6 @@ class WrongTypedBaseTestModel extends Model
     public const TYPE_WRONG = 'wrong';
 
     protected $table = 'test_models';
+
     public $timestamps = false;
 }

@@ -37,7 +37,7 @@ trait CheckOverrides
 
         foreach ($methods as $method) {
             $attributes = $method->getAttributes(RequiresOverride::class);
-            if (!empty($attributes) && !static::isMethodOverridden($method)) {
+            if (! empty($attributes) && ! static::isMethodOverridden($method)) {
                 $message = $attributes[0]->newInstance()->message;
                 throw new RequiredOverrideNotExistsException("{$calledClass}->{$method->getName()}: $message");
             }

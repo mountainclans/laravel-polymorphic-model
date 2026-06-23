@@ -14,6 +14,7 @@ trait PolymorphicModel
     use CheckOverrides;
 
     protected static array $allowedTypesCheckCache = [];
+
     public const TYPE_DEFAULT = 'default';
 
     #[RequiresOverride]
@@ -25,9 +26,9 @@ trait PolymorphicModel
     protected static function bootPolymorphicModel(): void
     {
         static::addGlobalScope('withOrWithoutSubclasses', function ($query) {
-            $model = new static();
+            $model = new static;
 
-            if (!$model->hasTypeCondition($query)) {
+            if (! $model->hasTypeCondition($query)) {
                 return $query->withSubclasses();
             }
 
@@ -52,11 +53,11 @@ trait PolymorphicModel
 
         $instance = isset($allowedTypes[$attributes->type ?? null])
             ? new $allowedTypes[$attributes->type]
-            : new static();
+            : new static;
 
         $model = $instance->newInstance([], true);
 
-        $model->setRawAttributes((array)$attributes, true);
+        $model->setRawAttributes((array) $attributes, true);
 
         $model->setConnection($connection ?: $this->getConnectionName());
 
@@ -77,7 +78,7 @@ trait PolymorphicModel
             return;
         }
 
-        if (!method_exists($class, 'allowedTypes')) {
+        if (! method_exists($class, 'allowedTypes')) {
             throw new PolymorphicModelPropertyIsNotExistsException(
                 'Public static method allowedTypes() must be defined in the model.'
             );
@@ -85,14 +86,14 @@ trait PolymorphicModel
 
         $ref = new ReflectionMethod($class, 'allowedTypes');
 
-        if (!$ref->isPublic() || !$ref->isStatic()) {
+        if (! $ref->isPublic() || ! $ref->isStatic()) {
             throw new PolymorphicModelPropertyIsNotExistsException(
                 'Method allowedTypes() must be public and static in the model.'
             );
         }
 
         $returnType = $ref->getReturnType();
-        if (!$returnType || $returnType->getName() !== 'array') {
+        if (! $returnType || $returnType->getName() !== 'array') {
             throw new PolymorphicModelPropertyIsNotExistsException(
                 'Method allowedTypes() must have return type array in the model.'
             );
@@ -101,9 +102,9 @@ trait PolymorphicModel
         // Проставляем в кеш
         self::$allowedTypesCheckCache[$class] = true;
 
-        $attributes = (array)$attributes;
+        $attributes = (array) $attributes;
 
-        if (!isset($attributes['type'])) {
+        if (! isset($attributes['type'])) {
             throw new PolymorphicModelPropertyIsNotExistsException(
                 'The "type" field must be present in the attributes.'
             );
@@ -143,7 +144,7 @@ trait PolymorphicModel
             }
         }
 
-        if (!in_array($this::class, $types)) {
+        if (! in_array($this::class, $types)) {
             $types[] = $this->getInstanceType();
         }
 

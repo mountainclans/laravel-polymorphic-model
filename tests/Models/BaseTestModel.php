@@ -10,6 +10,7 @@ class BaseTestModel extends Model
     use PolymorphicModel;
 
     protected $table = 'test_models';
+
     public $timestamps = false;
 
     protected $fillable = [
@@ -18,6 +19,7 @@ class BaseTestModel extends Model
     ];
 
     public const TYPE_CHILD = 'child';
+
     public const TYPE_ANOTHER_CHILD = 'another_child';
 
     public static function allowedTypes(): array

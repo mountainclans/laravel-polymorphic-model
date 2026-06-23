@@ -4,6 +4,4 @@ namespace MountainClans\LaravelPolymorphicModel\Exceptions;
 
 use Exception;
 
-class PolymorphicModelPropertyIsNotExistsException extends Exception
-{
-}
+class PolymorphicModelPropertyIsNotExistsException extends Exception {}

@@ -2,9 +2,8 @@
 
 namespace MountainClans\LaravelPolymorphicModel\Tests;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
-use Orchestra\Testbench\TestCase as Orchestra;
 use MountainClans\LaravelPolymorphicModel\LaravelPolymorphicModelServiceProvider;
+use Orchestra\Testbench\TestCase as Orchestra;
 
 class TestCase extends Orchestra
 {
